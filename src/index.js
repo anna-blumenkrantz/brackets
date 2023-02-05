@@ -1,32 +1,26 @@
 module.exports = function check(str, bracketsConfig) {
 
-  const OPEN_BRACKETS = ["(", "{", "|"];
-  const BRACKETS_PAIR = {
-    [")"]: "(",
-    ["}"]: "{",
-    ["|"]: "|",
-  };
-
-  // function isBracketsOk(str) {
-    let stack = [];
-
-    for (let i = 0; i < str.length; i++) {
-      let currentSymbol = str[i];
-
-      if (bracketsConfig.includes(currentSymbol)) {
-        stack.push(currentSymbol);
-      } else {
+   let stack = [];
+  for (let i = 0; i < str.length; i++) {
+    for (let j = 0; j < bracketsConfig.length; j++) {
+      // Check if the current character is an opening bracket
+      if (str[i] === bracketsConfig[j][0]) {
+        stack.push(str[i]);
+        break;
+      }
+      // Check if the current character is a closing bracket
+      if (str[i] === bracketsConfig[j][1]) {
         if (stack.length === 0) {
           return false;
         }
-
-        let topElement = stack[stack.length - 1];
-
-        if (BRACKETS_PAIR[currentSymbol] === topElement) {
-          stack.pop();
-        } else {
+        // Check if the last opened bracket matches the current closing bracket
+        if (stack[stack.length - 1] !== bracketsConfig[j][0]) {
           return false;
         }
+        stack.pop();
+        break;
       }
     }
+  }
+  return stack.length === 0;
 }
